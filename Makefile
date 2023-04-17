@@ -1,10 +1,10 @@
 TITLE := computegraph
 OUT := $(TITLE)
 CC := gcc
-CFLAGS := -c -I../Object
-LDFLAGS := -L$$HOME -lalloc -lobj
+CFLAGS := -c -I../Object -I../Flow
+LDFLAGS := -L$$HOME -lalloc -lobj -lflow
 GCFLAGS := -ggdb -Og
-OBJDIR := ../$(TITLE)_obj/
+OBJDIR := ../builds/$(TITLE)_obj/
 SRCDIRS := $(wildcard */*/*/) $(wildcard */*/) $(wildcard */)
 OBJDIRS := $(OBJDIR) $(SRCDIRS:%/=$(OBJDIR)%/)
 SRC := $(wildcard */*/*/*.c */*/*.c */*.c *.c)

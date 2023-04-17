@@ -4,12 +4,13 @@
 #include "Var.h"
 
 #ifdef __cplusplus
-extern 'C'{
+extern 'C'
+{
 #endif
 
-extern const void *Op;
-typedef struct Op* Op_t;
-//other declarations go here
+    extern const void *Op;
+    typedef struct Op *Op_t;
+// other declarations go here
 #ifdef __cplusplus
 }
 #endif

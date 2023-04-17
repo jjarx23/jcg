@@ -2,53 +2,72 @@
 #define VAR_R_H
 
 #include <Obj.r.h>
-
+#include "BuildData.h"
 #ifdef __cplusplus
-extern 'C'{
+extern 'C'
+{
 #endif
 
-typedef struct mlList {
-    void *data;
-    struct mlList *next;
-} mlList_t;
-typedef struct {
-    mlList_t *list;
-    int count;
-} BuildData_t;
+    extern const fn_t varLC;
 
-typedef struct VarClass* VarClass_t;
-typedef struct VarClass VarClass_st;
-typedef struct Var Var_st;
-struct VarClass{
-    ObjClass_st _;
-    //other members go here
-    void (*listdep)(void * head,void * v, struct mlList **list, int *count);
-};
-struct Var{
-    const Obj_st _;
-    //other members go here
-    const void *builddata;
-    const void **res;
-    const int nres;
-};
+    typedef struct mlList
+    {
+        void *data;
+        struct mlList *next;
+    } mlList_t;
 
-#define resI(x,i)(((Var_t)x)->nres>1?((Var_t)x)->res[i]:(void *)((Var_t)x)->res)
-#define nRes(x)(((Var_t)x)->nres)
-#define buildData(x)(((Var_t)x)->builddata)
-
-#define setBuildData(o, y)mut(((Var_t)o)->builddata,void *,y)
-#define setResI(x,i, y_)mut((i>=1?((Var_t)x)->res:&((Var_t)x)->res)[i], void *, (y_))
-    //resI(x, i)=(y_))
-#define setNRes(x,n)mut(((Var_t)x)->nres, int, n)
-
-#define initRes(x, n)(((Var_t)x)->res=n>1?0:malloc((n)*sizeof(void *)))
-
-#define listDeps(head, v, list, c)((*(VarClass_t *)v)->listdep(head, v, list, c))
-#define mlAppend(l, v, c)mlList_t *_=malloc(sizeof(mlList_t));\
-_->data=v;\
-_->next=l[0];l[0]=_;c[0]++;
-#define superListDep(class, head, v, list, c)(((VarClass_t)super(class))->listdep(head, v, list, c))
-
+    typedef struct VarClass *VarClass_t;
+    typedef struct VarClass VarClass_st;
+    typedef struct Var Var_st;
+    struct VarClass
+    {
+        ObjClass_st _;
+        // other members go here
+        void (*eval)(void *v);
+        void (*diff)(void *v);
+    };
+    struct Var
+    {
+        const Obj_st _;
+        // other members go here
+        const void *builddata;
+        const void *res;
+        const void *grads;
+    };
+    /*_____________________________________________*/
+    static inline BuildData_t buildData(Var_t v)
+    {
+        return v->builddata;
+    }
+    static inline void setBuildData(Var_t v, BuildData_t bd)
+    {
+        if (v->builddata)
+            detach(v->builddata);
+        v->builddata = bd;
+        attach(bd);
+    }
+    static inline void *res(Var_t v)
+    {
+        return v->res;
+    }
+    static inline void *grad(Var_t v)
+    {
+        return v->grads;
+    }
+    static inline void *setGrad(Var_t v, void *y)
+    {
+        return *(void **)&v->grads = y;
+    }
+    static inline void setRes(Var_t v, void *y)
+    {
+        detach(v->res);
+        v->res = y;
+        attach(y);
+    }
+    static inline void supereval(ObjClass_t cls, Var_t o)
+    {
+        return ((VarClass_t)cls->super)->eval(o);
+    }
 #ifdef __cplusplus
 }
 #endif

@@ -1,40 +1,41 @@
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
+#include <stdio.h>
 #include "TwoToOne.h"
 #include "TwoToOne.r.h"
 
-
-//implement if necessary
-static void cstr(void *obj, va_list *arg){
-    TwoToOne_t o=obj;
-    setNRes(o, 1);
-    setNDeps(o, 2);
-    setA(o, va_arg(*arg, Op_t));
-    setB(o, va_arg(*arg, Op_t));
-    //printf("TwoToOne constructor \n");
-    setDeps(o, &o->a);
+static void cstr(void *obj, va_list *arg)
+{
+    setDeps(obj, internalOperands(obj), 2);
+    setDepsI(obj, 0, va_arg(*arg, Op_t));
+    setDepsI(obj, 1, va_arg(*arg, Op_t));
     return;
 }
 
-static void dstr(void *obj){
-    TwoToOne_t o=obj;
-    setNDeps(o, 0);
-    superdstr(TwoToOne, o);
-    //printf("TwoToOne destructor \n");
-}/*
-//other implentation go here
-static int rpr(const void *b, char *str, int length){
-    return printf("TwoToOne %p \n", b);
+static void dstr(void *obj)
+{
+    setDeps(obj, 0, 2);
+    superdstr(TwoToOne, obj);
 }
-*/
-static TwoToOneClass_st Class;
-const void *TwoToOne=&Class;
 
-//assigning inheritance and overrides
-/*static*/ void /*__attribute__((constructor))*/ twotooneClassf(){
-    memcpy(TwoToOne, Op, sizeof(TwoToOneClass_st));
-    (*(ObjClass_t)&Class).size=sizeof(TwoToOne_st);
-    (*(ObjClass_t)&Class).super=Op;
-    (*(ObjClass_t)&Class).cstr=cstr;
+static TwoToOneClass_st Class;
+const void *TwoToOne = 0;
+
+// assigning inheritance and overrides
+static void __attribute__((constructor)) twotooneClassf()
+{
+    if (TwoToOne)
+        return;
+    opLC();
+    mut(TwoToOne, void *, &Class);
+    memcpy((void *)TwoToOne, Op, sizeof(TwoToOneClass_st));
+    (*(ObjClass_t)&Class).size = sizeof(TwoToOne_st);
+    static const char name[] = "TwoToOne";
+    (*(ObjClass_t)&Class).name = name;
+    (*(ObjClass_t)&Class).super = Op;
+    (*(ObjClass_t)&Class).cstr = cstr;
+    (*(ObjClass_t)&Class).dstr = dstr;
 }
-//other implentation go here
+
+const fn_t twotooneLC = twotooneClassf;

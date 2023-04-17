@@ -4,25 +4,30 @@
 #include "../Op.r.h"
 
 #ifdef __cplusplus
-extern 'C'{
+extern 'C'
+{
 #endif
 
-typedef struct TwoToOneClass* TwoToOneClass_t;
-typedef struct TwoToOneClass TwoToOneClass_st;
-typedef struct TwoToOne TwoToOne_st;
-struct TwoToOneClass{
-    OpClass_st _;
-    //other members go here
-};
-struct TwoToOne{
-    const Op_st _;
-    //other members go here
-    const Op_t a, b;
-};
+    extern const fn_t twotooneLC;
 
-#define setA(x,y)mut(((TwoToOne_t)x)->a, Op_t, y)
-#define setB(x,y)mut(((TwoToOne_t)x)->b, Op_t, y)
-
+    typedef struct TwoToOneClass *TwoToOneClass_t;
+    typedef struct TwoToOneClass TwoToOneClass_st;
+    typedef struct TwoToOne TwoToOne_st;
+    struct TwoToOneClass
+    {
+        OpClass_st _;
+        // other members go here
+    };
+    struct TwoToOne
+    {
+        const Op_st _;
+        // other members go here
+        const Var_t operand1, operand2;
+    };
+    static inline Var_t *internalOperands(TwoToOne_t t)
+    {
+        return &t->operand1;
+    }
 #ifdef __cplusplus
 }
 #endif

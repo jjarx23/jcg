@@ -3,18 +3,15 @@
 
 #include "Var.h"
 #include "Op.h"
-#include "Op/Op/Add.h"
+#include "Op/Flow/Add.h"
+#include "BuildData.h"
+#include "jCG.h"
 
 #ifdef __cplusplus
-extern 'C'{
+extern 'C'
+{
 #endif
 
-typedef struct {
-    Var_t (*add)(Var_t x, Var_t y);
-    void (*build)(Var_t x);
-} CG_op_t;
-extern const CG_op_t CG;
-//other declarations go here
 #ifdef __cplusplus
 }
 #endif
