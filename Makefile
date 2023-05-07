@@ -17,8 +17,8 @@ CFLAGS +=  $(GCFLAGS)
 endif
 
 ifeq ($(as),dyn)
-CFLAGS += -D AS_LIB -fPIC
-LDFLAGS += -shared
+CFLAGS += -D AS_LIB -fPIC 
+LDFLAGS += -shared  -fPIC
 OUT := lib$(TITLE).so
 else
 ifeq ($(as), static)
@@ -31,10 +31,12 @@ ALL: PREBUILD APP POSTBUILD
 	@echo $(OUT) built
 	@echo
 
-PREBUILD:
-	@mkdir -p $(OBJDIRS)
+PREBUILD: $(OBJDIRS)
 	@echo created obj dirs: $(OBJDIRS)
 	@echo
+
+%/:
+	@mkdir -p $@
 
 APP: $(OBJ)
 ifeq ($(as), static)
@@ -47,7 +49,7 @@ endif
 $(OBJDIR)%.o:%.c
 	@$(CC) $(CFLAGS) $^ -o $@
 	@echo $@ built
-	@echo
+	@echo $(CFLAGS)
 
 POSTBUILD:
 	@mv $(OUT) $$HOME
