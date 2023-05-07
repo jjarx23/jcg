@@ -36,6 +36,7 @@ extern 'C'
     {
         if (n > 1)
             return setDeps(v, malloc(n * sizeof(Var_t)), n);
+        return setDeps(v, 0, n);
     }
     static inline void brkDeps(Op_t v)
     {

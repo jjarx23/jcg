@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <stdio.h>
 #include "Op.h"
 #include "Op.r.h"
 #include "BuildData.h"
@@ -9,7 +10,6 @@ static void dstr(void *obj)
 {
     brkDeps(obj);
     superdstr(Op, obj);
-    // printf("Op destructor \n");
 }
 
 static void eval(void *v)
@@ -22,11 +22,9 @@ static void eval(void *v)
         supereval(Op, depsI(v, i));
     }
     VarClass_t c = classOf(v);
-    printf("%p==%p\n", c->eval, eval);
     if ((c = classOf(v))->eval == eval)
     {
-        printf("extend class Op and override its eval() fn\n");
-        exit(-1);
+        fatalErr("Op: %s extend class Op and override its eval() fn\n", className(v));
     }
 }
 static void diff(void *v)
@@ -39,14 +37,12 @@ static void diff(void *v)
         supereval(Op, depsI(v, i));
     }
     VarClass_t c = classOf(v);
-    // printf("%p==%p\n", c->diff, diff);
     if ((c = classOf(v))->diff == diff)
     {
         if (c == Op)
-            printf("Op requires inheritance \n");
+            fatalErr("Op: Op requires inheritance \n");
         else
-            printf("override class %s diff()\n", className(v));
-        exit(-1);
+            fatalErr("Op: override class %s diff()\n", className(v));
     }
 }
 
