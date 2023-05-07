@@ -6,6 +6,7 @@
 #include "Op/Flow/edms/Divide.h"
 #include "Op/Flow/edms/Multiply.h"
 #include "Op/Flow/Subtract.h"
+#include "Op/Flow/XCorrelation.h"
 
 static void print(void *o_)
 {
@@ -62,6 +63,15 @@ static void build(void *o_)
     */
 }
 
+static void setNodeData(Var_t node, void *data)
+{
+    setRes(node, data);
+}
+static void nodeData(Var_t node, void *data)
+{
+    return res(node);
+}
+
 static void eval(void *v)
 {
     if (!(buildData(v) ? BuildDataFn.isBuildData(buildData(v)) : 0))
@@ -81,7 +91,8 @@ static void calcGrad(void *x, void *grad_)
 {
     void *_0 = grad_;
     void *oldxgrad = grad(x);
-    void *xgrad = Flow->add(oldxgrad ? oldxgrad : Flow->zero, grad_ = (grad_ ? grad_ : Flow->one));
+    void *xgrad = Flow.math.add(oldxgrad ? oldxgrad : Flow.constants.zero,
+                                grad_ = (grad_ ? grad_ : Flow.constants.one));
     if (oldxgrad != xgrad)
     {
         setGrad(x, xgrad);
@@ -92,7 +103,7 @@ static void calcGrad(void *x, void *grad_)
     if (classOf(x) != Var)
         for (int i = 0; i < nDeps(x); i++)
         {
-            xgrad = Flow->multiply(grad_, oldxgrad = coeftI(x, i));
+            xgrad = Flow.math.multiply(grad_, oldxgrad = coeftI(x, i));
             calcGrad(depsI(x, i), xgrad);
             if (xgrad != oldxgrad && xgrad != grad_)
                 del(xgrad);
@@ -145,4 +156,8 @@ static void *divide(void *x, void *y)
 {
     return neu(Divide, x, y);
 }
-const CG_op_t jCG = {print, build, eval, diff, gradx, var, add, subtract, multiply, divide};
+static void *xcorrel(void *x, void *y)
+{
+    return neu(XCorrelation, x, y);
+}
+const CG_op_t jCG = {print, build, setNodeData, eval, diff, nodeData, gradx, var, add, subtract, multiply, divide, xcorrel};
