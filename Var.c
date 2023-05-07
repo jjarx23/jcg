@@ -12,15 +12,14 @@ static void cstr(void *obj, va_list *arg)
 }
 static int rpr(const void *b, char *str, int length)
 {
-    return Flow->stringOf(res(b), str, length);
+    return Flow.util.stringOf(res(b), str, length);
 }
 
 static void eval(void *v)
 {
     if (!res(v))
     {
-        printf("%p(%s) missing operand\n", v, className(v));
-        exit(-1);
+        fatalErr("Var: %p(%s) missing operand\n", v, className(v));
     }
 }
 

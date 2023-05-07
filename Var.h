@@ -1,7 +1,7 @@
 #ifndef VAR_H
 #define VAR_H
 
-#include "../Object/Obj.h"
+#include <Obj.h>
 
 #ifdef __cplusplus
 extern 'C'
