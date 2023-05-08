@@ -1,8 +1,8 @@
-TITLE := computegraph
+TITLE := jcg
 OUT := $(TITLE)
 CC := gcc
-CFLAGS := -c -I../Object -I../Flow
-LDFLAGS := -L$$HOME -lalloc -lobj -lflow
+CFLAGS := -c -I../objekt -I../flow
+LDFLAGS := -L$$HOME -lyhunk -lobjekt -lflow
 GCFLAGS := -ggdb -Og
 OBJDIR := ../builds/$(TITLE)_obj/
 SRCDIRS := $(wildcard */*/*/) $(wildcard */*/) $(wildcard */)
