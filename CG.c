@@ -3,10 +3,10 @@
 
 #include "CG.h"
 #include "CG.r.h"
-#include "Op/Flow/edms/Divide.h"
-#include "Op/Flow/edms/Multiply.h"
-#include "Op/Flow/Subtract.h"
-#include "Op/Flow/XCorrelation.h"
+#include "ops/Flow/edms/Divide.h"
+#include "ops/Flow/edms/Multiply.h"
+#include "ops/Flow/Subtract.h"
+#include "ops/Flow/XCorrelation.h"
 
 static void print(void *o_)
 {
